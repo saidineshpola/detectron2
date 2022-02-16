@@ -22,7 +22,7 @@ RUN wget https://bootstrap.pypa.io/get-pip.py && \
 # See https://pytorch.org/ for other options if you use a different version of CUDA
 RUN pip install --user tensorboard cmake   # cmake from apt-get is too old
 RUN pip install -U torch==1.9.0+cu111 torchvision==0.10.0+cu111 -f https://download.pytorch.org/whl/torch_stable.html
-RUN pip install --user cython pyyaml pycocotools cv2 numpy pandas plotly
+RUN pip install --user cython pyyaml pycocotools cv2 numpy pandas plotly scipy shapely timm h5py submitit scikit-image
 RUN pip install -U detectron2==0.6+cu111 -f https://dl.fbaipublicfiles.com/detectron2/wheels/cu111/index.html
 RUN pip install --user 'git+https://github.com/facebookresearch/fvcore'
 # install detectron2
