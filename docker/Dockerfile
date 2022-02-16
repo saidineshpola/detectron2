@@ -3,7 +3,7 @@ FROM nvidia/cuda:11.1.1-cudnn8-devel-ubuntu18.04
 
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update && apt-get install -y \
-	python3-opencv ca-certificates python3-dev git wget sudo ninja-build
+	python3-opencv ca-certificates python3-dev git wget sudo ninja-build vim
 RUN ln -sv /usr/bin/python3 /usr/bin/python
 
 # create a non-root user
@@ -21,11 +21,13 @@ RUN wget https://bootstrap.pypa.io/get-pip.py && \
 # install dependencies
 # See https://pytorch.org/ for other options if you use a different version of CUDA
 RUN pip install --user tensorboard cmake   # cmake from apt-get is too old
-RUN pip install --user torch==1.10 torchvision==0.11.1 -f https://download.pytorch.org/whl/cu111/torch_stable.html
-
+RUN pip install -U torch==1.9.0+cu111 torchvision==0.10.0+cu111 -f https://download.pytorch.org/whl/torch_stable.html
+RUN pip install --user cython pyyaml pycocotools cv2 numpy pandas plotly
+RUN pip install -U detectron2==0.6+cu111 -f https://dl.fbaipublicfiles.com/detectron2/wheels/cu111/index.html
 RUN pip install --user 'git+https://github.com/facebookresearch/fvcore'
 # install detectron2
-RUN git clone https://github.com/facebookresearch/detectron2 detectron2_repo
+RUN git clone https://github.com/saidineshpola/detectron2 detectron2_repo
+RUN git clone https://github.com/saidineshpola/Mask2Former.git mask2former
 # set FORCE_CUDA because during `docker build` cuda is not accessible
 ENV FORCE_CUDA="1"
 # This will by default build detectron2 for all common cuda architectures and take a lot more time,
@@ -33,7 +35,7 @@ ENV FORCE_CUDA="1"
 ARG TORCH_CUDA_ARCH_LIST="Kepler;Kepler+Tesla;Maxwell;Maxwell+Tegra;Pascal;Volta;Turing"
 ENV TORCH_CUDA_ARCH_LIST="${TORCH_CUDA_ARCH_LIST}"
 
-RUN pip install --user -e detectron2_repo
+RUN pip install --user -e mask2former
 
 # Set a fixed model cache directory.
 ENV FVCORE_CACHE="/tmp"
